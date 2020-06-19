@@ -75,6 +75,11 @@ class SystemAdvancedService(ConfigService):
         if data.get('sed_user'):
             data['sed_user'] = data.get('sed_user').upper()
 
+        if data['swapondrive'] and (
+            not await self.middleware.call('system.is_freenas') and await self.middleware.call('failover.licensed')
+        ):
+            data['swapondrive'] = 0
+
         return data
 
     async def __validate_fields(self, schema, data):
